@@ -1,0 +1,48 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Food } from './food.schema';
+import { Model } from 'mongoose';
+import { AddFoodDto } from './dto/addFood.dto';
+import { UpdateFoodDto } from './dto/updateFood.dto';
+
+@Injectable()
+export class FoodsService {
+  constructor(@InjectModel(Food.name) private foodModel: Model<Food>) {}
+  async getFoods() {
+    const foods = await this.foodModel.find();
+    return {
+      message: 'Foods fetched successfully',
+      data: foods,
+    };
+  }
+  async getFood(id: string) {
+    const food = await this.foodModel.findById(id);
+    if (!food) throw new NotFoundException('Food not found');
+    return {
+      message: 'Food fetched successfully',
+      data: food,
+    };
+  }
+  async addFood(data: AddFoodDto) {
+    const newFood = await this.foodModel.create(data);
+    return {
+      message: 'New food added successfully',
+      data: newFood,
+    };
+  }
+  async updateFood(data: UpdateFoodDto) {
+    const updatedFood = await this.foodModel.findByIdAndUpdate(data.id, data);
+    if (!updatedFood) throw new NotFoundException('Food not found');
+    return {
+      message: 'Food updated successfully',
+      data: updatedFood,
+    };
+  }
+  async deleteFood(id: string) {
+    const deletedFood = await this.foodModel.findByIdAndUpdate(id);
+    if (!deletedFood) throw new NotFoundException('Food not found');
+    return {
+      message: 'Food deleted successfully',
+    };
+  }
+}
