@@ -21,6 +21,9 @@ export class User extends Document {
 
   @Prop({ default: UserRole.USER })
   role: UserRole;
+
+  @Prop({ nullable: true })
+  profileImage: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

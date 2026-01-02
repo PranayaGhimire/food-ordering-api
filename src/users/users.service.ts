@@ -14,4 +14,7 @@ export class UsersService {
   create(data: LoginDto | RegisterDto) {
     return this.userModel.create(data);
   }
+  findByIdAndUpdate(id: string, data: RegisterDto) {
+    return this.userModel.findByIdAndUpdate(id, { $set: data }, { new: true });
+  }
 }

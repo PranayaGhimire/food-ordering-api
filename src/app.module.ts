@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { FoodsModule } from './foods/foods.module';
 import { OrdersModule } from './orders/orders.module';
+import { CloudinaryModule } from './common/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { OrdersModule } from './orders/orders.module';
     RestaurantsModule,
     FoodsModule,
     OrdersModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
