@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UsersService } from '../users/users.service';
+import { UserRole } from '../users/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -19,9 +20,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   async register(dto: RegisterDto) {
-    const existingAdmin = await this.usersService.findByRole(dto.role);
-    if (existingAdmin)
-      throw new ConflictException('An admin account already exists');
+    if (dto.role === UserRole.ADMIN) {
+      const existingAdmin = await this.usersService.findByRole(dto.role);
+      if (existingAdmin)
+        throw new ConflictException('An admin account already exists');
+    }
     const existingUser = await this.usersService.findByEmail(dto.email);
     if (existingUser) throw new ConflictException('Email already in use');
     const hashed = await bcrypt.hash(dto.password, 10);
