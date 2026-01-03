@@ -25,6 +25,11 @@ export class UsersController {
     if (!profileImage) {
       throw new BadRequestException('File is required');
     }
+    if (!profileImage.buffer) {
+      throw new BadRequestException(
+        'File buffer is empty. Check multer memoryStorage',
+      );
+    }
     return this.cloudinaryService.uploadFile(profileImage);
   }
 }
