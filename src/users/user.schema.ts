@@ -23,7 +23,7 @@ export class User extends Document {
   role: UserRole;
 
   @Prop({ nullable: true })
-  profileImage: string;
+  profileImageUrl: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -17,4 +17,14 @@ export class UsersService {
   findByIdAndUpdate(id: string, data: RegisterDto) {
     return this.userModel.findByIdAndUpdate(id, { $set: data }, { new: true });
   }
+  findByRole(role: string) {
+    return this.userModel.findOne({ role });
+  }
+  async getProfile(id: string) {
+    const user = await this.userModel.findById(id);
+    return {
+      message: 'User Profile Fetched Successfully',
+      data: user,
+    };
+  }
 }

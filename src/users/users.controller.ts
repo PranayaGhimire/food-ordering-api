@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   BadRequestException,
   Controller,
+  Get,
   Patch,
+  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -10,10 +14,18 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CloudinaryService } from '../common/cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import multer from 'multer';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from './user.schema';
+import { Model } from 'mongoose';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private cloudinaryService: CloudinaryService) {}
+  constructor(
+    private cloudinaryService: CloudinaryService,
+    @InjectModel(User.name) private userModel: Model<User>,
+    private userService: UsersService,
+  ) {}
   @Patch('me')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
@@ -21,7 +33,10 @@ export class UsersController {
       storage: multer.memoryStorage(),
     }),
   )
-  uploadPhoto(@UploadedFile() profileImage: Express.Multer.File) {
+  async uploadPhoto(
+    @UploadedFile() profileImage: Express.Multer.File,
+    @Req() req: any,
+  ) {
     if (!profileImage) {
       throw new BadRequestException('File is required');
     }
@@ -30,6 +45,21 @@ export class UsersController {
         'File buffer is empty. Check multer memoryStorage',
       );
     }
-    return this.cloudinaryService.uploadFile(profileImage);
+    const result = await this.cloudinaryService.uploadFile(profileImage);
+    const updatedUser = await this.userModel.findByIdAndUpdate(
+      req.user.userId,
+      { profileImageUrl: result.secure_url },
+      { new: true },
+    );
+    return {
+      message: 'Profile Picture Uploaded Successfully',
+      user: updatedUser,
+      cloudinary: result,
+    };
+  }
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getProfile(@Req() req: any) {
+    return this.userService.getProfile(req.user.userId);
   }
 }

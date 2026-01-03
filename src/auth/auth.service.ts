@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UsersService } from '../users/users.service';
-import { UserRole } from '../users/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -16,9 +19,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   async register(dto: RegisterDto) {
-    const user = await this.usersService.findByEmail(dto.email);
-    if (user?.role === UserRole.ADMIN)
-      return { message: 'Admin is already created' };
+    const existingAdmin = await this.usersService.findByRole(dto.role);
+    if (existingAdmin)
+      throw new ConflictException('An admin account already exists');
+    const existingUser = await this.usersService.findByEmail(dto.email);
+    if (existingUser) throw new ConflictException('Email already in use');
     const hashed = await bcrypt.hash(dto.password, 10);
     const newUser = await this.usersService.create({
       ...dto,
