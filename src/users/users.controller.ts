@@ -15,7 +15,7 @@ export class UsersController {
   @Patch('me')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  uploadPhoto(@UploadedFile() file: Express.Multer.File) {
-    return this.cloudinaryService.uploadFile(file);
+  uploadPhoto(@UploadedFile() profileImage: Express.Multer.File) {
+    return this.cloudinaryService.uploadFile(profileImage);
   }
 }
