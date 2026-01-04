@@ -40,8 +40,8 @@ export class FoodsController {
   }
   @UseGuards(JwtAuthGuard)
   @Roles(UserRole.ADMIN)
-  @Delete()
-  deleteFood(id: string) {
+  @Delete(':id')
+  deleteFood(@Param('id') id: string) {
     return this.foodService.deleteFood(id);
   }
 }

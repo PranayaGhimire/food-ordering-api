@@ -39,7 +39,7 @@ export class FoodsService {
     };
   }
   async deleteFood(id: string) {
-    const deletedFood = await this.foodModel.findByIdAndUpdate(id);
+    const deletedFood = await this.foodModel.findByIdAndDelete(id);
     if (!deletedFood) throw new NotFoundException('Food not found');
     return {
       message: 'Food deleted successfully',

@@ -8,4 +8,6 @@ export class AddFoodDto {
   price: number;
   @Prop()
   restaurantId: Types.ObjectId;
+  @Prop()
+  image: string;
 }
