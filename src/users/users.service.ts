@@ -27,4 +27,11 @@ export class UsersService {
       data: user,
     };
   }
+  async updateProfile(id: string, data: RegisterDto) {
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, data);
+    return {
+      message: 'User Profile Updated Successfully',
+      data: updatedUser,
+    };
+  }
 }

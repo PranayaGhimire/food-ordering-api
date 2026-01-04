@@ -2,9 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   Patch,
+  Put,
   Req,
   UploadedFile,
   UseGuards,
@@ -18,6 +20,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
 import { UsersService } from './users.service';
+import { RegisterDto } from '../auth/dto/register.dto';
 
 @Controller('users')
 export class UsersController {
@@ -61,5 +64,10 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req: any) {
     return this.userService.getProfile(req.user.userId);
+  }
+  @Put('me')
+  @UseGuards(JwtAuthGuard)
+  updateProfile(@Req() req: any, @Body() body: RegisterDto) {
+    return this.userService.updateProfile(req.user.userId, body);
   }
 }
