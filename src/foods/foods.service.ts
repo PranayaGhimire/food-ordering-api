@@ -1,13 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Food } from './food.schema';
 import { Model } from 'mongoose';
 import { AddFoodDto } from './dto/addFood.dto';
 import { UpdateFoodDto } from './dto/updateFood.dto';
+import { CloudinaryService } from '../common/cloudinary/cloudinary.service';
 
 @Injectable()
 export class FoodsService {
-  constructor(@InjectModel(Food.name) private foodModel: Model<Food>) {}
+  constructor(
+    @InjectModel(Food.name) private foodModel: Model<Food>,
+    private cloudinaryService: CloudinaryService,
+  ) {}
   async getFoods() {
     const foods = await this.foodModel.find();
     return {
@@ -23,8 +32,13 @@ export class FoodsService {
       data: food,
     };
   }
-  async addFood(data: AddFoodDto) {
-    const newFood = await this.foodModel.create(data);
+  async addFood(data: AddFoodDto, file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('Image is required');
+    const imageData = await this.cloudinaryService.uploadFile(file);
+    const newFood = await this.foodModel.create({
+      ...data,
+      image: imageData?.secure_url,
+    });
     return {
       message: 'New food added successfully',
       data: newFood,

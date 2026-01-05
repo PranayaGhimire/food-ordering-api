@@ -6,7 +6,9 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FoodsService } from './foods.service';
 import { AddFoodDto } from './dto/addFood.dto';
@@ -14,6 +16,7 @@ import { UpdateFoodDto } from './dto/updateFood.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../users/user.schema';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('foods')
 export class FoodsController {
@@ -29,8 +32,9 @@ export class FoodsController {
   @UseGuards(JwtAuthGuard)
   @Roles(UserRole.ADMIN)
   @Post()
-  addFood(@Body() body: AddFoodDto) {
-    return this.foodService.addFood(body);
+  @UseInterceptors(FileInterceptor('file'))
+  addFood(@Body() body: AddFoodDto, @UploadedFile() file: Express.Multer.File) {
+    return this.foodService.addFood(body, file);
   }
   @UseGuards(JwtAuthGuard)
   @Roles(UserRole.ADMIN)
