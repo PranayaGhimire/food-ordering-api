@@ -3,10 +3,10 @@ import { Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Order {
-  @Prop({ type: [Types.ObjectId], ref: 'Food' })
-  foodIds: Types.ObjectId[];
-  @Prop()
-  totalAmount: number;
+  @Prop({ type: Types.ObjectId, ref: 'Food' })
+  food: Types.ObjectId;
+  // @Prop()
+  // totalAmount: number;
   @Prop({ default: 'PENDING' })
   status: string;
 }

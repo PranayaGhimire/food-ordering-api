@@ -9,7 +9,7 @@ import { UpdateOrderDto } from './dto/updateOrder.dto';
 export class OrdersService {
   constructor(@InjectModel(Order.name) private orderModel: Model<Order>) {}
   async findOrders() {
-    const orders = await this.orderModel.find();
+    const orders = await this.orderModel.find().populate('food');
     return {
       message: 'Orders found successfully',
       data: orders,
