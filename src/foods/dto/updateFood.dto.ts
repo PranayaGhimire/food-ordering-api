@@ -1,13 +1,18 @@
 import { Prop } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateFoodDto {
+  // @Prop()
+  // id: string;
+  @IsOptional()
+  @IsString()
   @Prop()
-  id: string;
+  name?: string;
+  @IsOptional()
+  @IsNumber()
   @Prop()
-  name: string;
-  @Prop()
-  price: number;
+  price?: number;
   @Prop()
   restaurantId: Types.ObjectId;
 }

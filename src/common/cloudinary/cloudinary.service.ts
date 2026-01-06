@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -20,6 +21,17 @@ export class CloudinaryService {
       );
 
       streamifier.createReadStream(file.buffer).pipe(uploadStream);
+    });
+  }
+  deleteFile(publicId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) return reject(error);
+        if (result?.result !== 'ok') {
+          return reject(`Failed to delete image: ${publicId}`);
+        }
+        resolve();
+      });
     });
   }
 }

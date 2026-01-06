@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BadRequestException,
@@ -38,14 +39,37 @@ export class FoodsService {
     const newFood = await this.foodModel.create({
       ...data,
       image: imageData?.secure_url,
+      imagePublicId: imageData?.public_id,
     });
     return {
       message: 'New food added successfully',
       data: newFood,
     };
   }
-  async updateFood(data: UpdateFoodDto) {
-    const updatedFood = await this.foodModel.findByIdAndUpdate(data.id, data);
+  async updateFood(
+    id: string,
+    data: UpdateFoodDto,
+    file?: Express.Multer.File,
+  ) {
+    const food = await this.foodModel.findById(id);
+    if (!food) throw new NotFoundException('Food not found');
+    let imageData;
+    if (file) {
+      if (food.imagePublicId) {
+        await this.cloudinaryService.deleteFile(food.imagePublicId);
+      }
+      imageData = await this.cloudinaryService.uploadFile(file);
+    }
+    const updatedFood = await this.foodModel.findByIdAndUpdate(
+      id,
+      {
+        ...data,
+        image: imageData?.secure_url,
+      },
+      {
+        new: true,
+      },
+    );
     if (!updatedFood) throw new NotFoundException('Food not found');
     return {
       message: 'Food updated successfully',

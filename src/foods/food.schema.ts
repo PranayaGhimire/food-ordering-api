@@ -12,6 +12,9 @@ export class Food {
   @Prop()
   image: string;
 
+  @Prop()
+  imagePublicId: string;
+
   @Prop({ type: Types.ObjectId, ref: 'Restaurant' })
   restaurantId: Types.ObjectId;
 }

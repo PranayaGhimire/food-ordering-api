@@ -38,9 +38,14 @@ export class FoodsController {
   }
   @UseGuards(JwtAuthGuard)
   @Roles(UserRole.ADMIN)
-  @Put()
-  updateFood(@Body() body: UpdateFoodDto) {
-    return this.foodService.updateFood(body);
+  @Put(':id')
+  @UseInterceptors(FileInterceptor('file'))
+  updateFood(
+    @Param('id') id: string,
+    @Body() body: UpdateFoodDto,
+    file: Express.Multer.File,
+  ) {
+    return this.foodService.updateFood(id, body, file);
   }
   @UseGuards(JwtAuthGuard)
   @Roles(UserRole.ADMIN)
