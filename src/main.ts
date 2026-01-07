@@ -7,7 +7,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'https://food-ordering-frontend-pranaya.vercel.app/',
+    ],
     credentials: true,
   });
   app.setGlobalPrefix('api');
