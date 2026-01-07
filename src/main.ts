@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      'https://food-ordering-frontend-pranaya.vercel.app/',
+      'https://food-ordering-frontend-pranaya.vercel.app',
     ],
     credentials: true,
   });
