@@ -5,6 +5,8 @@ import { Types } from 'mongoose';
 export class Order {
   @Prop({ type: Types.ObjectId, ref: 'Food' })
   food: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  user: Types.ObjectId;
   // @Prop()
   // totalAmount: number;
   @Prop({ default: 'PENDING' })
