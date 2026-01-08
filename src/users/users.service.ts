@@ -41,6 +41,13 @@ export class UsersService {
       cloudinary: result,
     };
   }
+  async getUsers() {
+    const users = await this.userModel.find();
+    return {
+      message: 'All Users Fetched Successfully',
+      data: users,
+    };
+  }
   async getProfile(id: string) {
     const user = await this.userModel.findById(id);
     return {
@@ -53,6 +60,12 @@ export class UsersService {
     return {
       message: 'User Profile Updated Successfully',
       data: updatedUser,
+    };
+  }
+  async deleteUser(id: string) {
+    await this.userModel.findByIdAndDelete(id);
+    return {
+      message: 'User Deleted Successfully',
     };
   }
 }

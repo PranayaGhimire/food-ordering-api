@@ -3,7 +3,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Patch,
   Put,
   Req,
@@ -15,6 +17,8 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
 import { RegisterDto } from '../auth/dto/register.dto';
+import { Roles } from '../common/decorators/roles.decorator';
+import { UserRole } from './user.schema';
 
 @Controller('users')
 export class UsersController {
@@ -28,6 +32,12 @@ export class UsersController {
   ) {
     return this.userService.uploadPhoto(profileImage, req);
   }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.ADMIN)
+  getUsers() {
+    return this.userService.getUsers();
+  }
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req: any) {
@@ -37,5 +47,11 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   updateProfile(@Req() req: any, @Body() body: RegisterDto) {
     return this.userService.updateProfile(req.user.userId, body);
+  }
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.ADMIN)
+  deleteUser(@Param('id') id: string) {
+    return this.userService.deleteUser(id);
   }
 }
