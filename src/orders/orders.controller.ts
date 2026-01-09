@@ -32,7 +32,7 @@ export class OrdersController {
     return this.orderService.createOrder(body);
   }
   @UseGuards(JwtAuthGuard)
-  @Put()
+  @Put(':id')
   updateOrder(@Body() body: UpdateOrderDto) {
     return this.orderService.updateOrder(body);
   }
