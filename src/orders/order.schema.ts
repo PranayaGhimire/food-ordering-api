@@ -11,6 +11,8 @@ export class Order {
   // totalAmount: number;
   @Prop({ default: 'PENDING' })
   status: string;
+  @Prop({ default: 'UNPAID' })
+  paymentStatus: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
