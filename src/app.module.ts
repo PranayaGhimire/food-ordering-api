@@ -10,6 +10,7 @@ import { FoodsModule } from './foods/foods.module';
 import { OrdersModule } from './orders/orders.module';
 import { CloudinaryModule } from './common/cloudinary/cloudinary.module';
 import { PaymentsModule } from './payments/payments.module';
+import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PaymentsModule } from './payments/payments.module';
     OrdersModule,
     CloudinaryModule,
     PaymentsModule,
+    RatingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
