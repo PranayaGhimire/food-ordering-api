@@ -60,12 +60,21 @@ export class PaymentsService {
           },
         },
       );
-      if (response?.data?.data?.status === 'Completed') {
+      if (response?.data?.status === 'Completed') {
+        const order = await this.orderModel.findById(body.orderId);
+        if (order?.paymentStatus === 'PAID') {
+          return { message: 'Payment already verified' };
+        }
         await this.orderModel.findByIdAndUpdate(
           body.orderId,
-          { paymentStatus: 'PAID' },
+          { paymentStatus: 'PAID', khaltiPidx: body.pidx },
           { new: true },
         );
+      }
+      if (response?.data?.status !== 'Completed') {
+        await this.orderModel.findByIdAndUpdate(body.orderId, {
+          paymentStatus: 'FAILED',
+        });
       }
       return {
         message: 'Khalti Payment Verified Successfully',

@@ -13,6 +13,8 @@ export class Order {
   status: string;
   @Prop({ default: 'UNPAID' })
   paymentStatus: string;
+  @Prop()
+  khaltiPidx: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
