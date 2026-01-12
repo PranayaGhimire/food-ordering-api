@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Rating } from './rating.schema';
 import { Model } from 'mongoose';
@@ -9,7 +13,7 @@ import { UpdateRatingDto } from './dto/update-rating.dto';
 export class RatingsService {
   constructor(@InjectModel(Rating.name) private ratingModel: Model<Rating>) {}
   async getRatings() {
-    const ratings = await this.ratingModel.find();
+    const ratings = await this.ratingModel.find().populate('order user');
     return {
       message: 'Ratings Fetched Successfully',
       data: ratings,
@@ -41,6 +45,13 @@ export class RatingsService {
     return {
       message: 'Rating Updated Successfully',
       data: updatedRating,
+    };
+  }
+  async deleteRating(id: string) {
+    const deletedFood = await this.ratingModel.findByIdAndDelete(id);
+    if (!deletedFood) throw new NotFoundException('Rating Not Found');
+    return {
+      message: 'Rating Deleted Successfully',
     };
   }
 }

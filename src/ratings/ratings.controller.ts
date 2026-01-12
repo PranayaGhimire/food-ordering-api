@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -31,5 +32,9 @@ export class RatingsController {
   @Put(':id')
   updateRating(@Body() body: UpdateRatingDto) {
     return this.ratingService.updateRating(body);
+  }
+  @Delete(':id')
+  deleteRating(@Param('id') id: string) {
+    return this.ratingService.deleteRating(id);
   }
 }
