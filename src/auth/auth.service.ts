@@ -77,6 +77,7 @@ export class AuthService {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
+      path: '/',
     });
     return { message: 'Token Refreshed' };
   }

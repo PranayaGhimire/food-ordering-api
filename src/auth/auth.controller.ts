@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../users/user.schema';
 import { Model } from 'mongoose';
+import { RefreshTokenGuard } from '../common/guards/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -39,7 +40,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      path: '/auth/refresh',
+      path: '',
     });
     return {
       message: 'User Logged In successfully',
@@ -62,10 +63,11 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      path: '/auth/refresh',
+      path: '',
     });
     return { message: 'User logged out successfully' };
   }
+  @UseGuards(RefreshTokenGuard)
   @Post('refresh')
   async refresh(@Req() req: any, @Res({ passthrough: true }) res: Response) {
     return this.authService.refreshToken(req, res);
