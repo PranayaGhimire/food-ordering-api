@@ -8,6 +8,7 @@ import { UsersModule } from '../users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../users/user.schema';
+import { JwtRefreshStrategy } from '../common/strategies/jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { User, UserSchema } from '../users/user.schema';
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
