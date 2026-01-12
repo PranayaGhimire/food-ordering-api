@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { RatingsService } from './ratings.service';
 import { UpdateRatingDto } from './dto/update-rating.dto';
 import { CreateRatingDto } from './dto/create-rating.dto';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller('ratings')
 export class RatingsController {
@@ -15,6 +24,7 @@ export class RatingsController {
     return this.ratingService.getRating(id);
   }
   @Post()
+  @UseGuards(JwtAuthGuard)
   createRating(@Body() body: CreateRatingDto) {
     return this.ratingService.createRating(body);
   }

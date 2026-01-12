@@ -30,7 +30,7 @@ export class PaymentsService {
               : 'http://localhost:3000',
           amount: body.amount * 100,
           purchase_order_id: body.orderId,
-          purchase_order_name: 'Food Order',
+          purchase_order_name: body.food,
         },
         {
           headers: {

@@ -8,4 +8,7 @@ export class InitiateKhaltiDto {
   @IsNotEmpty()
   @Prop()
   orderId: string;
+  @IsNotEmpty()
+  @Prop()
+  food: string;
 }
