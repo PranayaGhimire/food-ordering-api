@@ -19,8 +19,29 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  async register(
+    @Body() dto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const user = await this.authService.register(dto);
+    const { accessToken, refreshToken } =
+      await this.authService.generateTokens(user);
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    });
+    return {
+      message: 'User Registered Successfully',
+      data: user,
+    };
   }
   @Post('login')
   async login(

@@ -47,10 +47,7 @@ export class AuthService {
       ...dto,
       password: hashed,
     });
-    return {
-      message: 'New user registered successfully',
-      data: newUser,
-    };
+    return newUser;
   }
   async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
