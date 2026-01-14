@@ -61,7 +61,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      path: '',
+      path: '/',
     });
     return {
       message: 'User Logged In successfully',
@@ -84,7 +84,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      path: '',
+      path: '/',
     });
     return { message: 'User logged out successfully' };
   }
