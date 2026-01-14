@@ -1,5 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Length,
+  MinLength,
+} from 'class-validator';
 import { Document } from 'mongoose';
 
 export enum UserRole {
@@ -13,7 +19,8 @@ export class User extends Document {
   @IsString()
   @Length(8)
   @Prop()
-  name: string;
+  fullName: string;
+
   @IsNotEmpty()
   @IsString()
   @Length(8)
@@ -26,6 +33,12 @@ export class User extends Document {
   @Length(10)
   @Prop({ unique: true })
   email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(10)
+  @Prop()
+  phoneNumber: string;
 
   @IsNotEmpty()
   @IsString()
