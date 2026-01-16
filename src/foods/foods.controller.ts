@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   UploadedFile,
@@ -17,6 +18,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../users/user.schema';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ToggleFoodAvailabilityDto } from './dto/toggle-food-availability.dto';
 
 @Controller('foods')
 export class FoodsController {
@@ -46,6 +48,15 @@ export class FoodsController {
     file: Express.Multer.File,
   ) {
     return this.foodService.updateFood(id, body, file);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.ADMIN)
+  @Patch(':id')
+  updateFoodAvailablity(
+    @Param('id') id: string,
+    @Body() body: ToggleFoodAvailabilityDto,
+  ) {
+    return this.foodService.updateFoodAvailability(id, body.isAvailable);
   }
   @UseGuards(JwtAuthGuard)
   @Roles(UserRole.ADMIN)

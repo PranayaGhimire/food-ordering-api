@@ -15,6 +15,9 @@ export class Food {
   @Prop()
   imagePublicId: string;
 
+  @Prop({ default: false })
+  isAvailable: boolean;
+
   @Prop({ type: Types.ObjectId, ref: 'Restaurant' })
   restaurantId: Types.ObjectId;
 }

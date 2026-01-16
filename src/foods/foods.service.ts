@@ -19,7 +19,7 @@ export class FoodsService {
     private cloudinaryService: CloudinaryService,
   ) {}
   async getFoods() {
-    const foods = await this.foodModel.find();
+    const foods = await this.foodModel.find().exec();
     return {
       message: 'Foods fetched successfully',
       data: foods,
@@ -74,6 +74,19 @@ export class FoodsService {
     return {
       message: 'Food updated successfully',
       data: updatedFood,
+    };
+  }
+  async updateFoodAvailability(id: string, isAvailable: boolean) {
+    const food = await this.foodModel.findById(id);
+    if (!food) throw new NotFoundException('Food not found');
+    const availableFood = await this.foodModel.findByIdAndUpdate(
+      id,
+      { $set: { isAvailable } },
+      { new: true },
+    );
+    return {
+      message: 'Food availability updated successfully',
+      data: availableFood,
     };
   }
   async deleteFood(id: string) {
