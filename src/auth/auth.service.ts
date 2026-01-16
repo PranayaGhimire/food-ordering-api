@@ -90,7 +90,11 @@ export class AuthService {
     });
     return { message: 'Token Refreshed' };
   }
-  async googleLogin(profile: { email: string; fullName: string }) {
+  async googleLogin(profile: {
+    email: string;
+    fullName: string;
+    photo: string;
+  }) {
     if (!profile.email) {
       throw new UnauthorizedException('Google account has no email');
     }
@@ -99,7 +103,8 @@ export class AuthService {
       user = await this.usersService.create({
         email: profile.email,
         fullName: profile.fullName,
-        provider: 'google',
+        profileImageUrl: profile.photo,
+        provider: 'GOOGLE',
         role: UserRole.USER,
         password: null,
       });

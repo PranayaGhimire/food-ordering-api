@@ -4,4 +4,5 @@ export class OAuthUserDto {
   provider: string;
   role: string;
   password: null;
+  profileImageUrl: string;
 }
