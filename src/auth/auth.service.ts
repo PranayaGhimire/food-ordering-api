@@ -51,7 +51,19 @@ export class AuthService {
   }
   async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
-    if (!user || !(await bcrypt.compare(dto.password, user.password))) {
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    if (user.provider === 'GOOGLE') {
+      throw new UnauthorizedException(
+        'This account uses Google login. Please sign in with Google',
+      );
+    }
+    if (!user.password) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+    if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
     return user;
@@ -77,5 +89,21 @@ export class AuthService {
       path: '/',
     });
     return { message: 'Token Refreshed' };
+  }
+  async googleLogin(profile: { email: string; fullName: string }) {
+    if (!profile.email) {
+      throw new UnauthorizedException('Google account has no email');
+    }
+    let user = await this.usersService.findByEmail(profile.email);
+    if (!user) {
+      user = await this.usersService.create({
+        email: profile.email,
+        fullName: profile.fullName,
+        provider: 'google',
+        role: UserRole.USER,
+        password: null,
+      });
+    }
+    return user;
   }
 }

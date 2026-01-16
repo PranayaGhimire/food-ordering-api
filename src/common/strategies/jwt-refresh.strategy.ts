@@ -17,7 +17,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
     });
   }
 
-  validate(req: any, payload: any) {
+  validate(payload: any) {
     return payload; // usually { sub, role }
   }
 }

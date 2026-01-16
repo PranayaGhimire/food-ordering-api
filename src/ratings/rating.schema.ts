@@ -9,6 +9,8 @@ export class Rating {
   order: Types.ObjectId;
   @Prop({ default: 0 })
   rating: number;
+  @Prop()
+  comment: string;
 }
 
 export const RatingSchema = SchemaFactory.createForClass(Rating);

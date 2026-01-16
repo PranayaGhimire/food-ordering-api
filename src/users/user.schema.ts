@@ -43,8 +43,8 @@ export class User extends Document {
   @IsNotEmpty()
   @IsString()
   @Length(8)
-  @Prop()
-  password: string;
+  @Prop({ type: String, required: false, default: null })
+  password?: string | null;
 
   @IsNotEmpty()
   @Prop({ default: UserRole.USER })
@@ -57,6 +57,9 @@ export class User extends Document {
 
   @Prop()
   refreshToken?: string;
+
+  @Prop({ default: 'LOCAL' })
+  provider: 'LOCAL' | 'GOOGLE';
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

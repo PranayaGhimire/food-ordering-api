@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { LoginDto } from '../auth/dto/login.dto';
 import { RegisterDto } from '../auth/dto/register.dto';
 import { CloudinaryService } from '../common/cloudinary/cloudinary.service';
+import { OAuthUserDto } from '../auth/dto/oauth-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
   findByEmail(email: string) {
     return this.userModel.findOne({ email });
   }
-  create(data: LoginDto | RegisterDto) {
+  create(data: LoginDto | RegisterDto | OAuthUserDto) {
     return this.userModel.create(data);
   }
   findByIdAndUpdate(id: string, data: RegisterDto) {
