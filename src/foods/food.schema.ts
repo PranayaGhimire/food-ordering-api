@@ -18,6 +18,9 @@ export class Food {
   @Prop({ default: false })
   isAvailable: boolean;
 
+  @Prop()
+  category: string;
+
   @Prop({ type: Types.ObjectId, ref: 'Restaurant' })
   restaurantId: Types.ObjectId;
 }

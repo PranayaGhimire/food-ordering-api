@@ -10,4 +10,6 @@ export class AddFoodDto {
   restaurantId: Types.ObjectId;
   @Prop()
   image: string;
+  @Prop()
+  category: string;
 }

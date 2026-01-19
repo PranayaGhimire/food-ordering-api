@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -35,6 +36,9 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
   async register(dto: RegisterDto) {
+    const { confirmPassword, ...rest } = dto;
+    if (dto.password !== confirmPassword)
+      throw new BadRequestException('Passwords do not match');
     if (dto.role === UserRole.ADMIN) {
       const existingAdmin = await this.usersService.findByRole(dto.role);
       if (existingAdmin)
@@ -44,7 +48,7 @@ export class AuthService {
     if (existingUser) throw new ConflictException('Email already in use');
     const hashed = await bcrypt.hash(dto.password, 10);
     const newUser = await this.usersService.create({
-      ...dto,
+      ...rest,
       password: hashed,
     });
     return newUser;

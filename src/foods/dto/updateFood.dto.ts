@@ -14,5 +14,9 @@ export class UpdateFoodDto {
   @Prop()
   price?: number;
   @Prop()
+  image?: string;
+  @Prop()
+  category: string;
+  @Prop()
   restaurantId: Types.ObjectId;
 }
