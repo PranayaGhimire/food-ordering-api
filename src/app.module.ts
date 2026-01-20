@@ -12,6 +12,7 @@ import { CloudinaryModule } from './common/cloudinary/cloudinary.module';
 import { PaymentsModule } from './payments/payments.module';
 import { RatingsModule } from './ratings/ratings.module';
 import { MessagesModule } from './messages/messages.module';
+import { SubscribersModule } from './subscribers/subscribers.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { MessagesModule } from './messages/messages.module';
     PaymentsModule,
     RatingsModule,
     MessagesModule,
+    SubscribersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
