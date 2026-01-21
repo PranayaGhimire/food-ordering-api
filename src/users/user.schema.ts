@@ -1,11 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  Length,
-  MinLength,
-} from 'class-validator';
 import { Document } from 'mongoose';
 
 export enum UserRole {
@@ -15,43 +8,24 @@ export enum UserRole {
 
 @Schema({ timestamps: true })
 export class User extends Document {
-  @IsNotEmpty()
-  @IsString()
-  @Length(8)
   @Prop()
   fullName: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @Length(8)
   @Prop()
   username: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @IsEmail()
-  @Length(10)
   @Prop({ unique: true })
   email: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(10)
   @Prop()
   phoneNumber: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @Length(8)
-  @Prop({ type: String, required: false, default: null })
+  @Prop({ type: String, required: false, default: null, minLength: 8 })
   password?: string | null;
 
-  @IsNotEmpty()
   @Prop({ default: UserRole.USER })
   role: UserRole;
 
-  @IsNotEmpty()
-  @IsString()
   @Prop({ nullable: true })
   profileImageUrl: string;
 
@@ -60,6 +34,12 @@ export class User extends Document {
 
   @Prop({ default: 'LOCAL' })
   provider: 'LOCAL' | 'GOOGLE';
+
+  @Prop({ type: String, default: null })
+  passwordResetToken?: string | null;
+
+  @Prop({ type: Date, default: null })
+  passwordResetExpires?: Date | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -17,12 +17,16 @@ import { User, UserRole } from '../users/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Request, Response } from 'express';
+import * as crypto from 'crypto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private mailService: MailService,
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
   async generateTokens(user: User) {
@@ -114,5 +118,45 @@ export class AuthService {
       });
     }
     return user;
+  }
+  async forgotPassword(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) return { message: 'If email exists, reset link sent' };
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(resetToken)
+      .digest('hex');
+    await this.userModel.findByIdAndUpdate(user._id, {
+      passwordResetToken: hashedToken,
+      passwordResetExpires: new Date(Date.now() + 15 * 60 * 1000), // 15 min
+    });
+    const resetUrl = `${process.env.FRONTEND_REDIRECT_URL}/auth/resetPassword/${resetToken}`;
+    await this.mailService.sendResetPasswordEmail(email, resetUrl);
+    return {
+      message: 'Password reset link sent',
+    };
+  }
+  async resetPassword(dto: ResetPasswordDto) {
+    const { token, password } = dto;
+    if (!password) {
+      throw new UnauthorizedException('Password is required');
+    }
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await this.userModel.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: new Date() },
+    });
+
+    if (!user) throw new UnauthorizedException('Invalid or expired token');
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await user.save();
+    return {
+      message: 'Password reset successful',
+    };
   }
 }

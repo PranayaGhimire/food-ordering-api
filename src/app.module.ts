@@ -13,6 +13,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { RatingsModule } from './ratings/ratings.module';
 import { MessagesModule } from './messages/messages.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SubscribersModule } from './subscribers/subscribers.module';
     RatingsModule,
     MessagesModule,
     SubscribersModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

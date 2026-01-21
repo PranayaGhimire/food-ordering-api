@@ -19,6 +19,7 @@ import { User } from '../users/user.schema';
 import { Model } from 'mongoose';
 import { RefreshTokenGuard } from '../common/guards/jwt-refresh.guard';
 import { GoogleAuthGuard } from '../common/guards/google-auth.guard';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -124,5 +125,13 @@ export class AuthController {
       path: '/',
     });
     return res.redirect(process.env.FRONTEND_REDIRECT_URL!);
+  }
+  @Post('forgotPassword')
+  async forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+  @Post('resetPassword')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 }
