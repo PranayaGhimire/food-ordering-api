@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -19,13 +20,14 @@ import { UserRole } from '../users/user.schema';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ToggleFoodAvailabilityDto } from './dto/toggle-food-availability.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('foods')
 export class FoodsController {
   constructor(private foodService: FoodsService) {}
   @Get()
-  getFoods() {
-    return this.foodService.getFoods();
+  getFoods(@Query() pagination: PaginationDto) {
+    return this.foodService.getFoods(pagination);
   }
   @Get(':id')
   getFood(@Param('id') id: string) {

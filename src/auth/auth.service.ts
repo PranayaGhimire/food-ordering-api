@@ -29,15 +29,18 @@ export class AuthService {
     private mailService: MailService,
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
-  async generateTokens(user: User) {
+  async generateTokens(user: User, rememberMe = false) {
     const payload = { sub: user._id, role: user.role };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+    const refreshTokenExpiresIn = rememberMe ? '30d' : '1d';
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: refreshTokenExpiresIn,
+    });
     const hashedRefresh = await bcrypt.hash(refreshToken, 10);
     await this.userModel.findByIdAndUpdate(user._id, {
       refreshToken: hashedRefresh,
     });
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, rememberMe };
   }
   async register(dto: RegisterDto) {
     const { confirmPassword, ...rest } = dto;

@@ -59,8 +59,10 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = await this.authService.login(dto);
-    const { accessToken, refreshToken } =
-      await this.authService.generateTokens(user);
+    const { accessToken, refreshToken } = await this.authService.generateTokens(
+      user,
+      dto.rememberMe,
+    );
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: true,
@@ -72,6 +74,7 @@ export class AuthController {
       secure: true,
       sameSite: 'none',
       path: '/',
+      maxAge: dto.rememberMe ? 1000 * 60 * 60 * 24 * 30 : undefined,
     });
     return {
       message: 'User Logged In successfully',
