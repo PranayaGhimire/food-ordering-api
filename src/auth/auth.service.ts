@@ -34,6 +34,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
     const refreshTokenExpiresIn = rememberMe ? '30d' : '1d';
     const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_REFRESH_SECRET,
       expiresIn: refreshTokenExpiresIn,
     });
     const hashedRefresh = await bcrypt.hash(refreshToken, 10);
@@ -82,7 +83,9 @@ export class AuthService {
   async refreshToken(req: Request, res: Response) {
     const refreshToken = req.cookies?.refreshToken;
     if (!refreshToken) throw new UnauthorizedException();
-    const payload = this.jwtService.verify(refreshToken);
+    const payload = this.jwtService.verify(refreshToken, {
+      secret: process.env.JWT_REFRESH_SECRET,
+    });
     const user = await this.userModel.findById(payload.sub);
     if (!user || !user.refreshToken) {
       throw new UnauthorizedException();

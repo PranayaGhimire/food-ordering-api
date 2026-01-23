@@ -11,7 +11,7 @@ import { Model } from 'mongoose';
 import { AddFoodDto } from './dto/addFood.dto';
 import { UpdateFoodDto } from './dto/updateFood.dto';
 import { CloudinaryService } from '../common/cloudinary/cloudinary.service';
-import { PaginationDto } from '../common/dto/pagination.dto';
+import { QueryDto } from '../common/dto/query.dto';
 
 @Injectable()
 export class FoodsService {
@@ -19,13 +19,17 @@ export class FoodsService {
     @InjectModel(Food.name) private foodModel: Model<Food>,
     private cloudinaryService: CloudinaryService,
   ) {}
-  async getFoods(pagination: PaginationDto) {
-    const { page = 1, limit = 10 } = pagination;
+  async getFoods(query: QueryDto) {
+    const { page = 1, limit = 10, search } = query;
     const skip = (page - 1) * limit;
-    // const filter = search ? { name: { $regex: search, $options: 'i' } } : {};
+    const filter = search ? { name: { $regex: search, $options: 'i' } } : {};
 
     const [foods, total] = await Promise.all([
-      this.foodModel.find().skip(skip).limit(limit),
+      this.foodModel
+        .find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 }),
       this.foodModel.countDocuments(),
     ]);
     return {
@@ -42,6 +46,16 @@ export class FoodsService {
     if (!food) throw new NotFoundException('Food not found');
     return {
       message: 'Food fetched successfully',
+      data: food,
+    };
+  }
+  async searchFood(search: string) {
+    const food = await this.foodModel.find({
+      name: { $regex: search, $options: 'i' }, // 'i' for case-insensitive
+    });
+    if (!food) throw new NotFoundException('Food not found');
+    return {
+      message: 'Food searched successfully',
       data: food,
     };
   }
