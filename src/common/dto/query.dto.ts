@@ -5,4 +5,10 @@ export class QueryDto extends PaginationDto {
   @IsOptional()
   @IsString()
   search?: string;
+  @IsOptional()
+  @IsString()
+  category?: string;
+  @IsOptional()
+  @IsString()
+  price?: string;
 }

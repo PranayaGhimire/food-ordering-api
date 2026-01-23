@@ -20,16 +20,30 @@ export class FoodsService {
     private cloudinaryService: CloudinaryService,
   ) {}
   async getFoods(query: QueryDto) {
-    const { page = 1, limit = 10, search } = query;
+    const { page = 1, limit = 10, search, category, price } = query;
     const skip = (page - 1) * limit;
-    const filter = search ? { name: { $regex: search, $options: 'i' } } : {};
+    const filter: any = {};
+
+    if (search) {
+      filter.name = { $regex: search, $options: 'i' };
+    }
+
+    if (category && category !== 'All') {
+      filter.category = category;
+    }
+
+    let sort: any = { createdAt: -1 };
+
+    if (price === 'Lowest') {
+      sort = { price: 1 };
+    }
+
+    if (price === 'Highest') {
+      sort = { price: -1 };
+    }
 
     const [foods, total] = await Promise.all([
-      this.foodModel
-        .find(filter)
-        .skip(skip)
-        .limit(limit)
-        .sort({ createdAt: -1 }),
+      this.foodModel.find(filter).skip(skip).limit(limit).sort(sort),
       this.foodModel.countDocuments(),
     ]);
     return {
