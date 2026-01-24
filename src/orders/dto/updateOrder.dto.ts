@@ -1,13 +1,12 @@
-import { Prop } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateOrderDto {
-  @Prop()
+  @IsMongoId()
   id: string;
-  @Prop()
-  food: Types.ObjectId;
+  // food: Types.ObjectId;
   // @Prop()
   // totalAmount: number;
-  @Prop()
+  @IsString()
+  @IsNotEmpty()
   status: string;
 }
