@@ -1,13 +1,15 @@
-import { Prop } from '@nestjs/mongoose';
+import { IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateRatingDto {
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @IsMongoId()
   user: Types.ObjectId;
-  @Prop({ type: Types.ObjectId, ref: 'Order' })
+  @IsMongoId()
   order: Types.ObjectId;
-  @Prop({ default: 0 })
+  @IsNumber()
+  @IsNotEmpty()
   rating: number;
-  @Prop()
+  @IsNotEmpty()
+  @IsString()
   comment: string;
 }
