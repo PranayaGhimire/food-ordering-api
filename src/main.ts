@@ -11,6 +11,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://food-ordering-frontend-pranaya.vercel.app',
+      'https://www.pranayaghimire.com.np',
     ],
     credentials: true,
   });
