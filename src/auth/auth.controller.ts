@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
@@ -20,6 +21,7 @@ import { Model } from 'mongoose';
 import { RefreshTokenGuard } from '../common/guards/jwt-refresh.guard';
 import { GoogleAuthGuard } from '../common/guards/google-auth.guard';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { Turnstile } from 'nestjs-cloudflare-captcha';
 
 @Controller('auth')
 export class AuthController {
@@ -53,7 +55,9 @@ export class AuthController {
       data: user,
     };
   }
+
   @Post('login')
+  @Turnstile()
   async login(
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,

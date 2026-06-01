@@ -17,7 +17,7 @@ export class UsersService {
   findByEmail(email: string) {
     return this.userModel.findOne({ email });
   }
-  create(data: LoginDto | RegisterDto | OAuthUserDto) {
+  create(data: LoginDto | Omit<RegisterDto, 'confirmPassword'> | OAuthUserDto) {
     return this.userModel.create(data);
   }
   findByIdAndUpdate(id: string, data: RegisterDto) {

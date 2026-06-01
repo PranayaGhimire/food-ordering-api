@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -14,6 +17,7 @@ import { RatingsModule } from './ratings/ratings.module';
 import { MessagesModule } from './messages/messages.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { MailModule } from './mail/mail.module';
+import { TurnstileModule } from 'nestjs-cloudflare-captcha';
 
 @Module({
   imports: [
@@ -21,6 +25,10 @@ import { MailModule } from './mail/mail.module';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGO_URI!),
+    TurnstileModule.forRoot({
+      secretKey: process.env.TURNSTILE_SECRET_KEY!,
+      token: (req) => req.body.captchaToken,
+    }),
     AuthModule,
     UsersModule,
     RestaurantsModule,

@@ -17,4 +17,6 @@ export class LoginDto {
   password: string;
   @IsOptional()
   rememberMe?: boolean;
+  @IsString()
+  captchaToken:string;
 }
